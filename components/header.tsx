@@ -15,6 +15,20 @@ import { SidebarMobile } from './sidebar-mobile'
 import { SidebarToggle } from './sidebar-toggle'
 import { ChatHistory } from './chat-history'
 import { Session } from '@/lib/types'
+import LogoImg from '@/public/phospho-logo.svg'
+import Image from 'next/image'
+import { ArrowRightIcon } from '@radix-ui/react-icons'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTrigger
+} from './ui/alert-dialog'
+import { ExternalLink } from '@/components/external-link'
+import { AlertDialogCancel } from '@radix-ui/react-alert-dialog'
 
 async function UserOrLogin() {
   const session = (await auth()) as Session
@@ -52,27 +66,46 @@ export function Header() {
     <header className="sticky top-0 z-50 flex items-center justify-between w-full h-16 px-4 border-b shrink-0 bg-gradient-to-b from-background/10 via-background/50 to-background/80 backdrop-blur-xl">
       <div className="flex items-center">
         <React.Suspense fallback={<div className="flex-1 overflow-auto" />}>
-          <UserOrLogin />
+          {/* <UserOrLogin /> */}
+          <Link className="block" href="https://phospho.ai" target="_blank">
+            <Image
+              src={LogoImg}
+              width={120}
+              height={120}
+              priority
+              alt="phospho"
+            />
+          </Link>
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <Button variant="link">About</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>About</AlertDialogHeader>
+              <AlertDialogDescription>
+                This demo was built thanks to the open source AI chatbot built
+                with{' '}
+                <ExternalLink href="https://nextjs.org">Next.js</ExternalLink>{' '}
+                and{' '}
+                <ExternalLink href="https://github.com/vercel/ai">
+                  Vercel AI SDK
+                </ExternalLink>
+              </AlertDialogDescription>
+              <AlertDialogFooter>
+                <AlertDialogAction>Close</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </React.Suspense>
       </div>
       <div className="flex items-center justify-end space-x-2">
         <a
-          target="_blank"
-          href="https://github.com/vercel/nextjs-ai-chatbot/"
-          rel="noopener noreferrer"
-          className={cn(buttonVariants({ variant: 'outline' }))}
-        >
-          <IconGitHub />
-          <span className="hidden ml-2 md:flex">GitHub</span>
-        </a>
-        <a
-          href="https://vercel.com/templates/Next.js/nextjs-ai-chatbot"
+          href="https://platform.phospho.ai/"
           target="_blank"
           className={cn(buttonVariants())}
         >
-          <IconVercel className="mr-2" />
-          <span className="hidden sm:block">Deploy to Vercel</span>
-          <span className="sm:hidden">Deploy</span>
+          <ArrowRightIcon className="mr-2" />
+          <span className="hidden sm:block">Get started with phospho</span>
         </a>
       </div>
     </header>

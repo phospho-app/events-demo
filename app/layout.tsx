@@ -11,10 +11,10 @@ import { Toaster } from '@/components/ui/sonner'
 export const metadata = {
   metadataBase: new URL(`https://${process.env.VERCEL_URL}`),
   title: {
-    default: 'Next.js AI Chatbot',
-    template: `%s - Next.js AI Chatbot`
+    default: 'phospho demo',
+    template: `%s`
   },
-  description: 'An AI-powered chatbot template built with Next.js and Vercel.',
+  description: 'Discover phospho features.',
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
@@ -49,6 +49,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
+          forcedTheme="dark"
         >
           <div className="flex flex-col min-h-screen">
             <Header />
