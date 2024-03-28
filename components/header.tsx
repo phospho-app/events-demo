@@ -83,8 +83,7 @@ export function Header() {
             <AlertDialogContent>
               <AlertDialogHeader>About</AlertDialogHeader>
               <AlertDialogDescription>
-                This demo was built thanks to the open source AI chatbot built
-                with{' '}
+                This demo was built thanks to the open source AI chatbot from{' '}
                 <ExternalLink href="https://nextjs.org">Next.js</ExternalLink>{' '}
                 and{' '}
                 <ExternalLink href="https://github.com/vercel/ai">
@@ -99,13 +98,17 @@ export function Header() {
         </React.Suspense>
       </div>
       <div className="flex items-center justify-end space-x-2">
+        <Link href="mailto:contact@phospho.app">
+          <Button variant="link">Contact us</Button>
+        </Link>
         <a
           href="https://platform.phospho.ai/"
           target="_blank"
           className={cn(buttonVariants())}
         >
-          <ArrowRightIcon className="mr-2" />
-          <span className="hidden sm:block">Get started with phospho</span>
+          <ArrowRightIcon className="mr-1" />
+          Get started
+          <span className="hidden sm:block ml-1"> with phospho</span>
         </a>
       </div>
     </header>
