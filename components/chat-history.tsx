@@ -14,10 +14,10 @@ interface ChatHistoryProps {
 export async function ChatHistory({ userId }: ChatHistoryProps) {
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between p-4">
+      {/* <div className="flex items-center justify-between p-4">
         <h4 className="text-sm font-medium">Chat History</h4>
-      </div>
-      <div className="mb-2 px-2">
+      </div> */}
+      {/* <div className="mb-2 px-2">
         <Link
           href="/"
           className={cn(
@@ -28,7 +28,7 @@ export async function ChatHistory({ userId }: ChatHistoryProps) {
           <IconPlus className="-translate-x-2 stroke-2" />
           New Chat
         </Link>
-      </div>
+      </div> */}
       <React.Suspense
         fallback={
           <div className="flex flex-col flex-1 px-4 space-y-4 overflow-auto">
