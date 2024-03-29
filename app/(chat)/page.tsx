@@ -21,8 +21,8 @@ export default async function IndexPage() {
     <div className="group w-full overflow-auto">
       <Tabs defaultValue="text">
         <TabsList className="flex justify-center">
-          <TabsTrigger value="text">Text to Events</TabsTrigger>
           <TabsTrigger value="chat">Detect Events in chat</TabsTrigger>
+          <TabsTrigger value="text">Detect Events in text</TabsTrigger>
         </TabsList>
         <TabsContent value="text">
           <TextToEvents />
