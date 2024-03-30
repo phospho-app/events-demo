@@ -18,19 +18,25 @@ export default async function IndexPage() {
   const missingKeys = await getMissingKeys()
 
   return (
-    <div className="group w-full overflow-auto">
-      <Tabs defaultValue="text">
-        <TabsList className="flex justify-center">
-          <TabsTrigger value="chat">Detect Events in chat</TabsTrigger>
-          <TabsTrigger value="text">Detect Events in text</TabsTrigger>
-        </TabsList>
+    <div className="group w-full">
+      <Tabs defaultValue="chat">
+        <div className="static">
+          <TabsList className="flex justify-center">
+            <TabsTrigger value="chat">Detect Events in chat</TabsTrigger>
+            <TabsTrigger value="text">Detect Events in text</TabsTrigger>
+          </TabsList>
+        </div>
         <TabsContent value="text">
-          <TextToEvents />
+          <div className="overflow-auto">
+            <TextToEvents />
+          </div>
         </TabsContent>
         <TabsContent value="chat">
-          <AI initialAIState={{ chatId: id, messages: [] }}>
-            <Chat id={id} session={session} missingKeys={missingKeys} />
-          </AI>
+          <div className="overflow-auto">
+            <AI initialAIState={{ chatId: id, messages: [] }}>
+              <Chat id={id} session={session} missingKeys={missingKeys} />
+            </AI>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
