@@ -28,9 +28,7 @@ const FormSchema = z.object({
     })
 })
 
-export function TextareaForm() {}
-
-export function EmptyScreenText() {
+function EmptyScreenText() {
   return (
     <div className="flex flex-col gap-2 rounded-lg border bg-background p-8">
       <h1 className="text-lg font-semibold">
