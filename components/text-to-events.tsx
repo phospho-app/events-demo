@@ -56,6 +56,30 @@ export function TextToEvents() {
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     // toast.info(JSON.stringify(data, null, 2))
+    // Make an API request to detect events
+    fetch(
+      `/api/events/${process.env.NEXT_PUBLIC_PHOSPHO_PROJECT_ID}/messages`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + process.env.PHOSPHO_API_KEY
+        },
+        body: JSON.stringify({
+          messages: [
+            {
+              role: 'user',
+              content: data.text
+            }
+          ]
+        })
+      }
+    ).then(res => {
+      // Display a toast with the detected events
+      const events = res.json()
+      toast.info(JSON.stringify(events))
+    })
+    console.log(data)
   }
 
   return (

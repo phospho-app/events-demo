@@ -9,5 +9,13 @@ module.exports = {
         pathname: '**'
       }
     ]
-  }
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/v2/:path*`
+      },
+    ]
+  },
 }
