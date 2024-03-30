@@ -20,7 +20,7 @@ export default async function IndexPage() {
   return (
     <div className="group w-full">
       <Tabs defaultValue="chat">
-        <div className="static">
+        <div className="sticky top-0">
           <TabsList className="flex justify-center">
             <TabsTrigger value="chat">Detect Events in chat</TabsTrigger>
             <TabsTrigger value="text">Detect Events in text</TabsTrigger>
