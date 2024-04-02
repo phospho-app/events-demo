@@ -213,6 +213,8 @@ You are curious about what kind of events the user could be interested in.\
       }))
     ],
     text: async ({ content, done, delta }) => {
+      const messageId = nanoid()
+      console.log('Generated message id', messageId)
       if (!textStream) {
         textStream = createStreamableValue('')
         textNode = <BotMessage content={textStream.value} />
@@ -223,7 +225,7 @@ You are curious about what kind of events the user could be interested in.\
         const updatedMessages = [
           ...aiState.get().messages,
           {
-            id: nanoid(),
+            id: messageId,
             role: 'assistant',
             content
           }

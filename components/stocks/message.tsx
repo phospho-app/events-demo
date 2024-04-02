@@ -38,18 +38,21 @@ export function BotMessage({
   content: string | StreamableValue<string>
   className?: string
 }) {
-  const text = useStreamableText(content)
+  const { rawContent: text, finished: streamingFinished } =
+    useStreamableText(content)
   const [aiState] = useAIState()
   const [events, setEvents] = useState<Event[] | null>(null)
 
   useEffect(() => {
     ;(async () => {
-      console.log('messages', aiState.messages)
-      const foundEvents = await getEventsFromMessages(aiState.messages)
-      // Update the latest Message.events with the detected events
-      setEvents(foundEvents)
+      if (streamingFinished && events === null) {
+        console.log('streamingFinished', streamingFinished)
+        console.log('messages', aiState.messages)
+        const foundEvents = await getEventsFromMessages(aiState.messages)
+        setEvents(foundEvents)
+      }
     })()
-  }, [aiState.messages])
+  }, [text])
 
   return (
     <div className={cn('group relative flex items-start md:-ml-12', className)}>
@@ -99,8 +102,15 @@ export function BotMessage({
           {text}
         </MemoizedReactMarkdown>
         <div>
-          {events && <div className="text-xs pb-0.5">Detected events:</div>}
+          {streamingFinished && events === null && <>{spinner}</>}
+          {events && events.length === 0 && (
+            <div className="text-xs pb-0.5">No event detected</div>
+          )}
+          {events && events.length > 0 && (
+            <div className="text-xs pb-0.5">Detected events:</div>
+          )}
           {events &&
+            events.length > 0 &&
             events?.map(event => (
               <HoverCard key={event.id} openDelay={50} closeDelay={50}>
                 <HoverCardTrigger>

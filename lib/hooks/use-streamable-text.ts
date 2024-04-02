@@ -7,6 +7,7 @@ export const useStreamableText = (
   const [rawContent, setRawContent] = useState(
     typeof content === 'string' ? content : ''
   )
+  const [finished, setFinished] = useState(false)
 
   useEffect(() => {
     ;(async () => {
@@ -18,9 +19,10 @@ export const useStreamableText = (
             setRawContent((value = value + delta))
           }
         }
+        setFinished(true)
       }
     })()
   }, [content])
 
-  return rawContent
+  return { rawContent, finished }
 }
