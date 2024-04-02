@@ -154,3 +154,27 @@ export async function getMissingKeys() {
     .map(key => (process.env[key] ? '' : key))
     .filter(key => key !== '')
 }
+
+export async function getEventsFromText(text: string) {
+  // toast.info(JSON.stringify(data, null, 2))
+  // Make an API request to detect events
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/v2/events/${process.env.NEXT_PUBLIC_PHOSPHO_PROJECT_ID}/messages`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + process.env.PHOSPHO_API_KEY
+      },
+      body: JSON.stringify({
+        messages: [
+          {
+            role: 'user',
+            content: text
+          }
+        ]
+      })
+    }
+  )
+  return (await response.json())?.events
+}

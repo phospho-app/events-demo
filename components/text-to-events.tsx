@@ -16,6 +16,10 @@ import {
 } from './ui/form'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
+import { getEventsFromText } from '@/app/actions'
+import { useState } from 'react'
+import { Badge } from './ui/badge'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card'
 
 const FormSchema = z.object({
   text: z
@@ -45,41 +49,30 @@ function EmptyScreenText() {
   )
 }
 
+interface EventDefinition {
+  event_name: string
+  description: string
+}
+
+interface Event {
+  id: string
+  event_name: string
+  event_definition: EventDefinition
+}
+
 export function TextToEvents() {
-  // if (!session?.user?.id) {
-  //   return null
-  // }
+  const [events, setEvents] = useState<Event[] | null>(null)
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema)
   })
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     // toast.info(JSON.stringify(data, null, 2))
     // Make an API request to detect events
-    fetch(
-      `/api/events/${process.env.NEXT_PUBLIC_PHOSPHO_PROJECT_ID}/messages`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + process.env.PHOSPHO_API_KEY
-        },
-        body: JSON.stringify({
-          messages: [
-            {
-              role: 'user',
-              content: data.text
-            }
-          ]
-        })
-      }
-    ).then(res => {
-      // Display a toast with the detected events
-      const events = res.json()
-      toast.info(JSON.stringify(events))
-    })
-    console.log(data)
+    const foundEvents = await getEventsFromText(data.text)
+    console.log('foundEvents', foundEvents)
+    setEvents(foundEvents)
   }
 
   return (
@@ -110,11 +103,49 @@ export function TextToEvents() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
-                Detect events
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={form.formState.isSubmitting}
+              >
+                {!form.formState.isSubmitting && <>Detect events</>}
+                {form.formState.isSubmitting && <>Detecting events...</>}
               </Button>
             </form>
           </Form>
+        </div>
+        <div className="flex">
+          {events && events.length > 0 && (
+            <div className="flex-col space-y-2 pt-2">
+              <h2 className="text-xl font-bold">Events detected:</h2>
+              <div className="grid gap-2">
+                {events.map(event => (
+                  <HoverCard key={event.id} openDelay={50} closeDelay={50}>
+                    <HoverCardTrigger>
+                      <Badge key={event.id} className="text-sm">
+                        {event.event_name}
+                      </Badge>
+                    </HoverCardTrigger>
+                    <HoverCardContent>
+                      <div>
+                        <h3 className="text-lg font-bold">
+                          {event.event_name}
+                        </h3>
+                        <p className="text-muted-foreground">
+                          {event.event_definition.description}
+                        </p>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
+                ))}
+              </div>
+            </div>
+          )}
+          {events && events.length === 0 && (
+            <div className="flex items-center justify-center p-4 rounded-lg border bg-background">
+              <p className="text-muted-foreground">No events found</p>
+            </div>
+          )}
         </div>
       </div>
     </>
