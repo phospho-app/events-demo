@@ -49,7 +49,8 @@ export function BotMessage({
         console.log('streamingFinished', streamingFinished)
         console.log('messages', aiState.messages)
         const foundEvents = await getEventsFromMessages(aiState.messages)
-        setEvents(foundEvents)
+        console.log('foundEvents', foundEvents)
+        setEvents(foundEvents ?? [])
       }
     })()
   }, [text])

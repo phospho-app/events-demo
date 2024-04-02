@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { spinner } from '@/components/stocks/spinner'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -99,7 +100,9 @@ export function TextToEvents() {
                 disabled={form.formState.isSubmitting}
               >
                 {!form.formState.isSubmitting && <>Detect events</>}
-                {form.formState.isSubmitting && <>Detecting events...</>}
+                {form.formState.isSubmitting && (
+                  <>{spinner} Detecting events... </>
+                )}
               </Button>
             </form>
           </Form>
