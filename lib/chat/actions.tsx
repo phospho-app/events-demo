@@ -31,10 +31,12 @@ import {
   sleep,
   nanoid
 } from '@/lib/utils'
-import { saveChat } from '@/app/actions'
+import { getEventsFromMessages, saveChat } from '@/app/actions'
 import { SpinnerMessage, UserMessage } from '@/components/stocks/message'
 import { Chat } from '@/lib/types'
 import { auth } from '@/auth'
+import { Event } from '../models'
+import { Messages } from 'openai/resources/beta/threads/messages/messages'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || ''
@@ -210,7 +212,7 @@ You are curious about what kind of events the user could be interested in.\
         name: message.name
       }))
     ],
-    text: ({ content, done, delta }) => {
+    text: async ({ content, done, delta }) => {
       if (!textStream) {
         textStream = createStreamableValue('')
         textNode = <BotMessage content={textStream.value} />
@@ -218,16 +220,17 @@ You are curious about what kind of events the user could be interested in.\
 
       if (done) {
         textStream.done()
+        const updatedMessages = [
+          ...aiState.get().messages,
+          {
+            id: nanoid(),
+            role: 'assistant',
+            content
+          }
+        ] as Message[]
         aiState.done({
           ...aiState.get(),
-          messages: [
-            ...aiState.get().messages,
-            {
-              id: nanoid(),
-              role: 'assistant',
-              content
-            }
-          ]
+          messages: updatedMessages
         })
       } else {
         textStream.update(delta)
@@ -438,6 +441,7 @@ export type Message = {
   content: string
   id: string
   name?: string
+  events?: Event[]
 }
 
 export type AIState = {
@@ -503,6 +507,8 @@ export const AI = createAI<AIState, UIState>({
 })
 
 export const getUIStateFromAIState = (aiState: Chat) => {
+  console.log('aiState', aiState.messages)
+
   return aiState.messages
     .filter(message => message.role !== 'system')
     .map((message, index) => ({
@@ -529,7 +535,7 @@ export const getUIStateFromAIState = (aiState: Chat) => {
         ) : message.role === 'user' ? (
           <UserMessage>{message.content}</UserMessage>
         ) : (
-          <BotMessage content={message.content} />
+          <BotMessage content={message.content} key={message.id} />
         )
     }))
 }

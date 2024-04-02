@@ -20,6 +20,7 @@ import { getEventsFromText } from '@/app/actions'
 import { useState } from 'react'
 import { Badge } from './ui/badge'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card'
+import { Event } from '@/lib/models'
 
 const FormSchema = z.object({
   text: z
@@ -47,17 +48,6 @@ function EmptyScreenText() {
       </p>
     </div>
   )
-}
-
-interface EventDefinition {
-  event_name: string
-  description: string
-}
-
-interface Event {
-  id: string
-  event_name: string
-  event_definition: EventDefinition
 }
 
 export function TextToEvents() {

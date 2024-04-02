@@ -7,8 +7,14 @@ import { CodeBlock } from '../ui/codeblock'
 import { MemoizedReactMarkdown } from '../markdown'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
-import { StreamableValue } from 'ai/rsc'
+import { StreamableValue, useAIState } from 'ai/rsc'
 import { useStreamableText } from '@/lib/hooks/use-streamable-text'
+import { Event } from '@/lib/models'
+import { Badge } from '../ui/badge'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card'
+import { useEffect, useState } from 'react'
+import { getEventsFromMessages } from '@/app/actions'
+import { Message } from '@/lib/chat/actions'
 
 // Different types of message bubbles.
 
@@ -33,6 +39,17 @@ export function BotMessage({
   className?: string
 }) {
   const text = useStreamableText(content)
+  const [aiState] = useAIState()
+  const [events, setEvents] = useState<Event[] | null>(null)
+
+  useEffect(() => {
+    ;(async () => {
+      console.log('messages', aiState.messages)
+      const foundEvents = await getEventsFromMessages(aiState.messages)
+      // Update the latest Message.events with the detected events
+      setEvents(foundEvents)
+    })()
+  }, [aiState.messages])
 
   return (
     <div className={cn('group relative flex items-start md:-ml-12', className)}>
@@ -81,6 +98,27 @@ export function BotMessage({
         >
           {text}
         </MemoizedReactMarkdown>
+        <div>
+          {events && <div className="text-xs pb-0.5">Detected events:</div>}
+          {events &&
+            events?.map(event => (
+              <HoverCard key={event.id} openDelay={50} closeDelay={50}>
+                <HoverCardTrigger>
+                  <Badge key={event.id} className="text-sm">
+                    {event.event_name}
+                  </Badge>
+                </HoverCardTrigger>
+                <HoverCardContent>
+                  <div>
+                    <h3 className="text-lg font-bold">{event.event_name}</h3>
+                    <p className="text-muted-foreground">
+                      {event.event_definition.description}
+                    </p>
+                  </div>
+                </HoverCardContent>
+              </HoverCard>
+            ))}
+        </div>
       </div>
     </div>
   )

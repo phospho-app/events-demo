@@ -6,6 +6,7 @@ import { kv } from '@vercel/kv'
 
 import { auth } from '@/auth'
 import { type Chat } from '@/lib/types'
+import { Message } from '@/lib/chat/actions'
 
 export async function getChats(userId?: string | null) {
   if (!userId) {
@@ -156,7 +157,6 @@ export async function getMissingKeys() {
 }
 
 export async function getEventsFromText(text: string) {
-  // toast.info(JSON.stringify(data, null, 2))
   // Make an API request to detect events
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/v2/events/${process.env.NEXT_PUBLIC_PHOSPHO_PROJECT_ID}/messages`,
@@ -173,6 +173,24 @@ export async function getEventsFromText(text: string) {
             content: text
           }
         ]
+      })
+    }
+  )
+  return (await response.json())?.events
+}
+
+export async function getEventsFromMessages(messages: Message[]) {
+  // Make an API request to detect events
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/v2/events/${process.env.NEXT_PUBLIC_PHOSPHO_PROJECT_ID}/messages`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + process.env.PHOSPHO_API_KEY
+      },
+      body: JSON.stringify({
+        messages
       })
     }
   )
