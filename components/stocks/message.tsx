@@ -50,10 +50,11 @@ export function BotMessage({
         console.log('messages', aiState.messages)
         const foundEvents = await getEventsFromMessages(aiState.messages)
         console.log('foundEvents', foundEvents)
+
         setEvents(foundEvents ?? [])
       }
     })()
-  }, [text])
+  }, [streamingFinished])
 
   return (
     <div className={cn('group relative flex items-start md:-ml-12', className)}>
